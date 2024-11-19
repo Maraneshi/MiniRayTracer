@@ -176,9 +176,8 @@ inline Vec4 vabs(const Vec4& a) {
 }
 
 inline Vec4 reflect(const Vec4& v, const Vec4& n) {
-    float dp = 2 * dot(v, n);
-    Vec4 a = _mm_set_ps1(dp);
-    return v - (a * n);
+    float dp = 2.0f * dot(v, n);
+    return v - (dp * n);
 }
 
 
@@ -291,26 +290,26 @@ inline Vec3 log10(const Vec3& v) {
     return Vec3(log10f(v.x), log10f(v.y), log10f(v.z));
 }
 
-inline Vec3 pow(const Vec3& v, float f) {
+inline Vec3 powf(const Vec3& v, float f) {
     return Vec3(powf(v.x, f), powf(v.y, f), powf(v.z, f));
 }
 
 inline Vec3& Vec3::gamma_correct() {
-    *this = pow(*this, (1.0f / MRT_GAMMA));
+    *this = powf(*this, (1.0f / MRT_GAMMA));
     return *this;
 }
 
 inline Vec3 gamma_correct(const Vec3& c) {
-    return pow(c, (1.0f / MRT_GAMMA));
+    return powf(c, (1.0f / MRT_GAMMA));
 }
 
 inline Vec3& Vec3::inv_gamma_correct() {
-    *this = pow(*this, MRT_GAMMA);
+    *this = powf(*this, MRT_GAMMA);
     return *this;
 }
 
 inline Vec3 inv_gamma_correct(const Vec3& c) {
-    return pow(c, MRT_GAMMA);
+    return powf(c, MRT_GAMMA);
 }
 
 

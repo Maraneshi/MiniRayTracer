@@ -64,18 +64,20 @@ bool triangle::hit(const ray& r, float tmin, float tmax, hit_record *rec) const 
 
     Vec3 tvec = r.origin - m;
     float uu = dot(tvec, pvec) * sign;
-    if (uu < 0 || uu > det)
-        return false;
+    //if (uu < 0 || uu > det)
+    //    return false;
 
     Vec3 qvec = cross(tvec, u);
     float vv = dot(r.dir, qvec) * sign;
-    if (vv < 0 || (uu + vv) > det)
+    //if (vv < 0 || (uu + vv) > det)
+    // this branch is much more predictable than the individual early-outs, so it's often faster overall despite causing more wasted work (the bitwise ops are very intentional!)
+    if ((uu < 0) | (uu > det) | (vv < 0) | ((uu + vv) > det))
         return false;
 
     float invDet = 1 / det;
     float t = dot(v, qvec) * invDet * sign;
 
-    if (t < tmin || t > tmax)
+    if ((t < tmin) | (t > tmax)) // bitwise op to remove additional branch
         return false;
 
     uu *= invDet;
@@ -83,7 +85,7 @@ bool triangle::hit(const ray& r, float tmin, float tmax, hit_record *rec) const 
 
     rec->t = t;
     rec->p = r.eval(t);
-    rec->n = ((mn * (1 - uu - vv)) + (un * uu) + (vn * vv)).normalize();
+    rec->n = ((mn * (1 - uu - vv)) + (un * uu) + (vn * vv)).normalize(); // * sign?
     rec->u = uu;
     rec->v = vv;
     rec->mat_ptr = mat_ptr;
