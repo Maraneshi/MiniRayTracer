@@ -22,7 +22,7 @@ SET libs=-lkernel32 -luser32 -lgdi32
 SET dirs=-I../include/
 SET warns=-Wall -Wextra -Wno-unused-parameter -Wno-missing-field-initializers
 SET opts=-m64 -O3 -march=native
-SET misc=-fno-exceptions -fno-rtti -D_CRT_SECURE_NO_WARNINGS -Xclang -flto-visibility-public-std
+SET misc=-fno-exceptions -fno-rtti -D_CRT_SECURE_NO_WARNINGS -DBENCHMARK_STATIC_DEFINE -D_ENABLE_EXTENDED_ALIGNED_STORAGE -Xclang -flto-visibility-public-std
 
 REM C++14 is required if compiling with the Visual Studio 2017 headers
 clang++ -std=c++14 %opts% %dirs% %libs% %warns% %misc% -o MiniRayTracer.exe %files%

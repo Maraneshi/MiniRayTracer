@@ -28,9 +28,9 @@ libs="-lpthread -lbenchmark -lSDL2"
 dirs="-Llib -Iinclude -I../include/ -I../ -I/usr/include/SDL2"
 warns="-Wall -Wextra -Wno-unused-parameter -Wno-missing-field-initializers -Wno-ignored-attributes"
 opts="-m64 -g -O3 -march=native"
-misc="-fno-exceptions -fno-rtti"
+misc="-fno-exceptions -fno-rtti -DBENCHMARK_STATIC_DEFINE"
 
-clang++ -std=c++11 $opts $dirs $libs $warns $misc -o bench $files
+clang++ -std=c++14 $opts $dirs $libs $warns $misc -o bench $files
 
 # optional asm output
-# clang++ -S -std=c++11 -masm=intel $opts $dirs $libs $misc $files
+# clang++ -S -std=c++14 -masm=intel $opts $dirs $libs $misc $files
