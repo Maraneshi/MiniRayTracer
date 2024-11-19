@@ -16,5 +16,7 @@ int main(int argc, char *argv[]) {
     printf("NOTE: use --benchmark_filter=<regex> to select specific benchmarks (e.g. \"Mat4.*\")\n\n");
     benchmark::Initialize(&argc, argv);
     benchmark::RunSpecifiedBenchmarks();
+    printf("\npress any key to exit...\n");
+    getchar();
     return 0;
 }

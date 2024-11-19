@@ -11,7 +11,7 @@
 #pragma warning( disable : 4141 )
 #endif
 
-    #include "benchmark.h"
+    #include "benchmark/benchmark.h"
 
 #ifdef __clang__
 #pragma clang diagnostic pop
