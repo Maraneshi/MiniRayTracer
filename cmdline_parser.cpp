@@ -100,7 +100,8 @@ void ParseArgv(int argc, char** argv) {
     ReadParameter(argc, argv, "-mode",     &p.threadingMode, 0u, 1u);
     ReadParameter(argc, argv, "-maxlum",   &p.maxLuminance);
 
-    p.delay = CheckParameter(argc, argv, "-delay");
+    if (CheckParameter(argc, argv, "-delay"))
+        p.delay = true;
 
     G_params = p;
 }

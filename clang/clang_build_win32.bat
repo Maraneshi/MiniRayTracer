@@ -18,7 +18,7 @@ for %%a in (../*.cpp) do (
     )
 )
 
-SET libs=-lkernel32 -luser32 -lgdi32
+SET libs=-lkernel32 -luser32 -lgdi32 -lole32.lib -loleaut32.lib
 SET dirs=-I../include/
 SET warns=-Wall -Wextra -Wno-unused-parameter -Wno-missing-field-initializers
 SET opts=-m64 -O3 -march=native

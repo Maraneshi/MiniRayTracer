@@ -22,7 +22,7 @@ for %%a in (../*.cpp) do (
 
 
 SET fixVCRT=-D_MT -D_DLL -lmsvcrt -lucrt -lmsvcprt -lvcruntime -Xlinker /NODEFAULTLIB
-SET libs=-lkernel32 -luser32 -lgdi32 -lbenchmark.lib -lshlwapi.lib
+SET libs=-lkernel32 -luser32 -lgdi32 -lbenchmark.lib -lshlwapi.lib -lole32.lib -loleaut32.lib
 SET dirs=-Llib -Iinclude -I../include/ -I../
 SET warns=-Wall -Wextra -Wno-unused-parameter -Wno-missing-field-initializers
 SET opts=-m64 -O3 -march=native -Xlinker /LTCG

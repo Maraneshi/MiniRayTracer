@@ -19,6 +19,7 @@
 using namespace MRT;
 
 /* TODO:
+    - set as high-DPI aware to prevent Windows from scaling the window content
     - most scenes are currently broken due to handling of sky + tone mapping!
     - proper SIMD implementation via ray bundles
         - GPU implementation?
@@ -32,6 +33,8 @@ using namespace MRT;
     - check everywhere whether hitting backfaces from inside solid volumes is handled correctly
     - current Vec4/Vec3 setup can lead to very subtle bugs (e.g. Vec3 + float -> Vec4 add -> w != 0)
     - add benchmark for iterations over the buffer (standard x,y loop, single counter, pointer, pointer in reverse)
+    - make triangles simple structs with no material pointer and no virtual functions, triangle *meshes* should inherit from scene object instead
+        - meshes could be a specialization of bvhnode, including a more suitable implementation for the leaf nodes
     - fix race condition in work queue
     - combine draw and draw2 into a common interface
     - complete math library
@@ -407,6 +410,8 @@ int main(int argc, char* argv[]) {
                 MRT_SetWindowTitle(buf);
             }
 
+            MRT_ReportProgress(pctDone, 100);
+
 #if 1
             {
                 // Adaptive Logarithmic Mapping For Displaying Contrast Scenes
@@ -470,7 +475,7 @@ int main(int argc, char* argv[]) {
             }
 #else
             // simple gamma correction
-            for (size_t y = 0; y < p.bufferHeight; y++) {
+            for (size_t y = 0; y < p->bufferHeight; y++) {
                 for (size_t x = 0; x < p->bufferWidth; x++) {
                     G_backBuffer[x + y * p->bufferWidth] = ARGB32(gamma_correct(G_linearBackBuffer[x + y * p->bufferWidth]));
                 }

@@ -125,7 +125,7 @@
       <PreprocessorDefinitions>BENCHMARK_STATIC_DEFINE;_HAS_EXCEPTIONS=0;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;benchmark.lib;shlwapi.lib</AdditionalDependencies>
+      <AdditionalDependencies>ole32.lib;oleaut32.lib;kernel32.lib;user32.lib;gdi32.lib;benchmark.lib;shlwapi.lib</AdditionalDependencies>
       <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories);$(ProjectDir)lib\</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>

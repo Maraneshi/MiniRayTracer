@@ -6,12 +6,14 @@
 #include <Windows.h>
 #include <process.h>
 #include <stdio.h>
+#include <shobjidl.h>
 
 using namespace MRT;
 
 static HDC DC;
 static BITMAPINFO bmpInfo;
 static HWND mainWindow;
+static ITaskbarList3 *taskBar;
 static uint32 G_windowWidth;
 static uint32 G_windowHeight;
 static uint32 G_bufferWidth;
@@ -126,6 +128,9 @@ void MRT_CreateWindow(uint32_t windowWidth, uint32_t windowHeight, uint32_t buff
     G_windowHeight = windowHeight;
     G_bufferWidth  = bufferWidth;
     G_bufferHeight = bufferHeight;
+
+    CoCreateInstance(CLSID_TaskbarList, NULL, CLSCTX_INPROC_SERVER, IID_ITaskbarList3, (void **)&taskBar);
+    taskBar->SetProgressState(mainWindow, TBPF_NORMAL);
 }
 
 void MRT_HandleMessages() {
@@ -133,6 +138,22 @@ void MRT_HandleMessages() {
     while (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE)) {
         TranslateMessage(&msg);
         DispatchMessage(&msg);
+    }
+}
+
+void MRT_ReportProgress(uint64_t done, uint64_t total) {
+    if ((done == total) && (taskBar != NULL)) {
+        taskBar->SetProgressState(mainWindow, TBPF_NOPROGRESS);
+        taskBar->Release();
+        taskBar = NULL;
+    }
+    else {
+        if (taskBar == NULL) {
+            CoCreateInstance(CLSID_TaskbarList, NULL, CLSCTX_INPROC_SERVER, IID_ITaskbarList3, (void **)&taskBar);
+            taskBar->SetProgressState(mainWindow, TBPF_NORMAL);
+        }
+
+        taskBar->SetProgressValue(mainWindow, done, total);
     }
 }
 
