@@ -8,7 +8,7 @@
 class material;
 
 struct hit_record {
-    float t;
+    float t = INFINITY;
     Vec3 p;
     Vec3 n;
     float u;
@@ -27,7 +27,7 @@ public:
     virtual Vec3 pdf_generate(const Vec3& origin, float time) const {
         return Vec3(1, 0, 0);
     }
-
+    virtual void precompute_node_order() {}
     virtual ~scene_object() {}
 };
 
@@ -141,6 +141,7 @@ public:
     scene_object *left;
     scene_object *right;
     aabb box;
+    uint8 node_order;
     
     bvh_node(T* list[], size_t n, float time0, float time1);
 
@@ -149,36 +150,93 @@ public:
         return true;
     }
     bool hit(const ray& r, float tmin, float tmax, hit_record *rec) const override;
+
+    void precompute_node_order() override
+    {
+        // http://www.codercorner.com/blog/?p=734
+
+        const scene_object* P = left;
+        const scene_object* N = right;
+
+        aabb lbox, rbox;
+        P->bounding_box(&lbox, 0, 1);
+        N->bounding_box(&rbox, 0, 1);
+
+        const Vec3& C0 = lbox.center();
+        const Vec3& C1 = rbox.center();
+
+        Vec3 DirPPP = Vec3( 1.0f,  1.0f,  1.0f).normalize();
+        Vec3 DirPPN = Vec3( 1.0f,  1.0f, -1.0f).normalize();
+        Vec3 DirPNP = Vec3( 1.0f, -1.0f,  1.0f).normalize();
+        Vec3 DirPNN = Vec3( 1.0f, -1.0f, -1.0f).normalize();
+        Vec3 DirNPP = Vec3(-1.0f,  1.0f,  1.0f).normalize();
+        Vec3 DirNPN = Vec3(-1.0f,  1.0f, -1.0f).normalize();
+        Vec3 DirNNP = Vec3(-1.0f, -1.0f,  1.0f).normalize();
+        Vec3 DirNNN = Vec3(-1.0f, -1.0f, -1.0f).normalize();
+
+        bool bPPP = dot(Vec3(C0 - C1), DirPPP) < 0.0f;
+        bool bPPN = dot(Vec3(C0 - C1), DirPPN) < 0.0f;
+        bool bPNP = dot(Vec3(C0 - C1), DirPNP) < 0.0f;
+        bool bPNN = dot(Vec3(C0 - C1), DirPNN) < 0.0f;
+        bool bNPP = dot(Vec3(C0 - C1), DirNPP) < 0.0f;
+        bool bNPN = dot(Vec3(C0 - C1), DirNPN) < 0.0f;
+        bool bNNP = dot(Vec3(C0 - C1), DirNNP) < 0.0f;
+        bool bNNN = dot(Vec3(C0 - C1), DirNNN) < 0.0f;
+
+        uint8 Code = 0;
+        if (!bPPP)
+            Code |= (1 << 7); // Bit 0: PPP
+        if (!bPPN)
+            Code |= (1 << 6); // Bit 1: PPN
+        if (!bPNP)
+            Code |= (1 << 5); // Bit 2: PNP
+        if (!bPNN)
+            Code |= (1 << 4); // Bit 3: PNN
+        if (!bNPP)
+            Code |= (1 << 3); // Bit 4: NPP
+        if (!bNPN)
+            Code |= (1 << 2); // Bit 5: NPN
+        if (!bNNP)
+            Code |= (1 << 1); // Bit 6: NNP
+        if (!bNNN)
+            Code |= (1 << 0); // Bit 7: NNN
+
+        node_order = Code;
+    }
 };
 
 template <typename T>
 bool bvh_node<T>::hit(const ray& r, float tmin, float tmax, hit_record *rec) const {
 
     if (box.hit(r, tmin, tmax)) {
-        hit_record left_rec, right_rec;
-        bool hit_left = left->hit(r, tmin, tmax, &left_rec);
-        bool hit_right = right->hit(r, tmin, tmax, &right_rec);
 
-        if (!(hit_left || hit_right)) {
-            return false;
-        }
+        // sort left/right nodes by which one is closer to the ray, skip farther node if we hit something inside the closer node
+        // from http://www.codercorner.com/blog/?p=734
+        scene_object* closer;
+        scene_object* farther;
 
-        if (hit_left && hit_right) {
-            if (left_rec.t < right_rec.t) {
-                *rec = left_rec;
-            }
-            else {
-                *rec = right_rec;
-            }
+        // naive/slow version
+        //aabb lbox, rbox;
+        //left->bounding_box(&lbox, r.time, r.time);
+        //right->bounding_box(&rbox, r.time, r.time);
+        //if (dot(Vec3(lbox.center() - rbox.center()), r.dir) < 0.0f) {
+
+        if (node_order & r.dirMask) {
+            closer = left;
+            farther = right;
         }
-        else if (hit_left) {
-            *rec = left_rec;
-        }
-        else if (hit_right) {
-            *rec = right_rec;
+        else {
+            closer = right;
+            farther = left;
         }
 
-        return true;
+        bool hit_closer = closer->hit(r, tmin, tmax, rec);
+        if (hit_closer)
+            return true;
+
+        bool hit_farther = farther->hit(r, tmin, tmax, rec);
+
+        return hit_closer || hit_farther;
     }
     else {
         return false;
@@ -251,6 +309,8 @@ bvh_node<T>::bvh_node(T* list[], size_t n, float time0, float time1) {
         left = new bvh_node(list, n / 2, time0, time1);
         right = new bvh_node(list + (n / 2), n - (n / 2), time0, time1);
     }
+
+    precompute_node_order();
 
     //aabb box_left, box_right;
     //MRT_Assert(left->bounding_box(&box_left, time0, time1) && right->bounding_box(&box_right, time0, time1),

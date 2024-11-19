@@ -10,18 +10,24 @@ public:
     Vec3 shear;
     uint32_t kx, ky, kz;
 #endif
-    float time;
+    float time = 0;
     // hit backfaces if inside a solid volume (e.g. inside glass), can count nested volumes
-    int isInside;
+    int isInside = 0;
+    uint8 dirMask = 0;
 
-    ray(): time(0) {} ;
+    ray() = default;
+
+    static uint8 ComputeDirMask(const Vec3& dir)
+    {
+        const uint32 X = *(uint32*)&dir.x >> 31;
+        const uint32 Y = *(uint32*)&dir.y >> 31;
+        const uint32 Z = *(uint32*)&dir.z >> 31;
+        const uint32 BitIndex = Z | (Y << 1) | (X << 2);
+        return 1 << BitIndex;
+    }
     
     // direction will be normalized
-    ray(const Vec3& origin, const Vec3& dir, float time, int isInside = 0) { 
-        this->origin = origin;
-        this->dir = normalize(dir);
-        this->time = time;
-        this->isInside = isInside;
+    ray(const Vec3& origin, const Vec3& dir, float time, int isInside = 0) : origin(origin), dir(normalize(dir)), time(time), isInside(isInside) { 
 
 #ifdef NEW_INTERSECT
         // Watertight Ray/Triangle Intersection (http://jcgt.org/published/0002/01/05/paper.pdf)
@@ -42,6 +48,7 @@ public:
         this->shear.z = invZ;
         this->shear.w = 0.0f;
 #endif
+        dirMask = ComputeDirMask(dir);
     }
 
     Vec3 eval(float t) const {
