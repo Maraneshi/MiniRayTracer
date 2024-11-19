@@ -6,7 +6,7 @@
 
 Vec3 checker_tex::sample(float u, float v, const Vec3& p) const {
 #if 1
-    float sines = sin(scale * p.x) * sin(scale * p.y) * sin(scale * p.z);
+    float sines = sinf(scale * p.x) * sinf(scale * p.y) * sinf(scale * p.z);
     if (sines < 0)
         return odd->sample(u, v, p);
     else
@@ -113,13 +113,13 @@ static int perm_z[PERLIN_COUNT];
 
 float perlin_noise::noise(const Vec3& p) const {
 
-    float u = p.x - floor(p.x);
-    float v = p.y - floor(p.y);
-    float w = p.z - floor(p.z);
+    float u = p.x - floorf(p.x);
+    float v = p.y - floorf(p.y);
+    float w = p.z - floorf(p.z);
 
-    int i = (int) floor(p.x);
-    int j = (int) floor(p.y);
-    int k = (int) floor(p.z);
+    int i = (int) floorf(p.x);
+    int j = (int) floorf(p.y);
+    int k = (int) floorf(p.z);
 
     Vec3 c[2][2][2];
 #ifdef __clang__

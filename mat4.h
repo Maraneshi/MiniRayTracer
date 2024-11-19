@@ -40,7 +40,7 @@ struct alignas(32) Mat4 {
     const Vec4 &operator[](size_t i) const {
         return c[i];
     }
-    
+#pragma warning(disable:4458)
     Vec3 operator*(const Vec3 &v) const {
         __m128 vx = v.swizzle<X, X, X>().m;
         __m128 vy = v.swizzle<Y, Y, Y>().m;

@@ -61,7 +61,7 @@ static Vec3 *G_linearBackBuffer;
 Vec3 trace(const ray& r, const scene_object& scene, scene_object *biased_obj, uint32 depth) {
 
     G_rayCounter.fetch_add(1, std::memory_order_relaxed);
-    static MRT_Params *p = getParams();
+    static MRT_Params *params = getParams();
 
     hit_record hrec;
     if (scene.hit(r, 0.001f, std::numeric_limits<float>::max(), &hrec)) {
@@ -72,7 +72,7 @@ Vec3 trace(const ray& r, const scene_object& scene, scene_object *biased_obj, ui
 
         Vec3 emitted = hrec.mat_ptr->sampleEmissive(r, hrec);
 
-        if ((depth < p->maxBounces) && hrec.mat_ptr->scatter(r, hrec, &srec, pdf_p)) {
+        if ((depth < params->maxBounces) && hrec.mat_ptr->scatter(r, hrec, &srec, pdf_p)) {
 
             if (srec.is_specular) {
                 return srec.attenuation * trace(srec.specular_ray, scene, biased_obj, depth + 1);
@@ -103,7 +103,7 @@ Vec3 trace(const ray& r, const scene_object& scene, scene_object *biased_obj, ui
         }
     }
     else {
-        if (p->sceneSelect >= SCENE_CORNELL_BOX)
+        if (params->sceneSelect >= SCENE_CORNELL_BOX)
             return Vec3(0.0f);
         else {
             // background (sky)
@@ -156,7 +156,7 @@ unsigned int __stdcall draw(void * argp) {
 
                     Vec3 sample = trace(r, *args.scene.objects, args.scene.biased_objects, 0);
 
-                    if (!std::isfinite(sample.r) || !std::isfinite(sample.g) || !std::isfinite(sample.b)) {
+                    if (!isfinite(sample.r) || !isfinite(sample.g) || !isfinite(sample.b)) {
                         sample = color;
                     }
                     color += sample;
@@ -207,7 +207,7 @@ unsigned int __stdcall draw2(void * argp) {
 
                 Vec3 color = trace(r, *args.scene.objects, args.scene.biased_objects, 0);
 
-                if (!std::isfinite(color.r) || !std::isfinite(color.g) || !std::isfinite(color.b)) {
+                if (!isfinite(color.r) || !isfinite(color.g) || !isfinite(color.b)) {
                     if (sampleCount > 0)
                         color = G_linearBackBuffer[x + y * p->bufferWidth];
                     else
@@ -338,7 +338,7 @@ int main(int argc, char* argv[]) {
     
     typedef unsigned int(__stdcall *thread_fn)(void*);
     thread_fn thread_fun;
-    work_queue *queue;
+    work_queue *queue = nullptr;
 
     if (p->threadingMode == 0) {
         thread_fun = draw;
@@ -430,7 +430,7 @@ int main(int argc, char* argv[]) {
                         Vec3 color = G_linearBackBuffer[x + y * p->bufferWidth];
                         float lum = luminance(color);
                         float loglw = logf(lum + 1.0f);
-                        float lum_new = (L_dmax * 0.01f * invlogmax) * (loglw / logf(2 + pow(lum * invmax, bias) * 8));
+                        float lum_new = (L_dmax * 0.01f * invlogmax) * (loglw / logf(2 + powf(lum * invmax, bias) * 8));
                         color = (lum_new * color) / (lum + 0.00001f);
                         G_backBuffer[x + y * p->bufferWidth] = ARGB32(color);
                     }

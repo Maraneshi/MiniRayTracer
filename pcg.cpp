@@ -2,6 +2,7 @@
 #include <intrin.h> // _rotr()
 #endif
 #include "pcg.h"
+#include "mrt_math.h"
 
 // *Really* minimal PCG32 code / (c) 2014 M.E. O'Neill / pcg-random.org
 // Licensed under Apache License 2.0 (NO WARRANTY, etc. see website)
@@ -86,10 +87,10 @@ Vec3 random_in_sphere_g() {
 Vec3 random_cosine_direction(pcg32_random_t *rng) {
     float r1 = randf(rng);
     float r2 = randf(rng);
-    float z = sqrt(1 - r2);
+    float z = MRT::sqrt(1 - r2);
     float phi = 2 * M_PI_F * r1;
-    float x = cos(phi) * 2 * sqrt(r2);
-    float y = sin(phi) * 2 * sqrt(r2);
+    float x = cosf(phi) * 2 * MRT::sqrt(r2);
+    float y = sinf(phi) * 2 * MRT::sqrt(r2);
     return Vec3(x, y, z);
 }
 Vec3 random_cosine_direction() {
@@ -99,9 +100,9 @@ Vec3 random_cosine_direction() {
 Vec3 random_on_sphere_uniform(pcg32_random_t *rng) {
     float x = randf(rng) * 2 - 1.0f;
     float phi = randf(rng) * 2 * M_PI_F;
-    float s = sqrt(1 - x*x);
-    float y = cos(phi) * s;
-    float z = sin(phi) * s;
+    float s = MRT::sqrt(1 - x*x);
+    float y = cosf(phi) * s;
+    float z = sinf(phi) * s;
     return Vec3(x, y, z);
 }
 Vec3 random_on_sphere_uniform() {
@@ -124,10 +125,10 @@ Vec3 random_in_disk() {
 Vec3 random_towards_sphere(float radius, float dist_sq, pcg32_random_t *rng) {
     float r1 = randf(rng);
     float r2 = randf(rng);
-    float z = 1 + r2 * (sqrt(1 - radius*radius / dist_sq) - 1);
+    float z = 1 + r2 * (MRT::sqrt(1 - radius*radius / dist_sq) - 1);
     float phi = 2 * M_PI_F * r1;
-    float x = cos(phi) * sqrt(1 - z*z);
-    float y = sin(phi) * sqrt(1 - z*z);
+    float x = cosf(phi) * MRT::sqrt(1 - z*z);
+    float y = sinf(phi) * MRT::sqrt(1 - z*z);
     return Vec3(x, y, z);
 }
 Vec3 random_towards_sphere(float radius, float dist_sq) {

@@ -33,8 +33,8 @@ bool translate::bounding_box(aabb *box, float time0, float time1) const {
 rotate_y::rotate_y(scene_object *o, float angle) {
     obj = o;
     float radians = RAD(angle);
-    sin_theta = sin(radians);
-    cos_theta = cos(radians);
+    sin_theta = sinf(radians);
+    cos_theta = cosf(radians);
     hasBox = obj->bounding_box(&bbox, 0, 1);
 
     if (!hasBox) {

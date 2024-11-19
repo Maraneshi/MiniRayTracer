@@ -106,7 +106,7 @@ public:
 inline float fresnel_schlick(float cosine, float ref_index) {
     float r0 = (1 - ref_index) / (1 + ref_index); // r0 will be the same even if we swap ni and nt
     r0 = r0*r0;
-    return r0 + (1 - r0) * pow((1 - cosine), 5);
+    return r0 + (1 - r0) * powf((1 - cosine), 5);
 }
 
 class dielectric final : public material {

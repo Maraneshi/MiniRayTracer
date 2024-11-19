@@ -97,19 +97,12 @@ void MRT_CreateWindow(uint32_t windowWidth, uint32_t windowHeight, uint32_t buff
         exit(1);
     }
 
-    DWORD windowStyle = WS_SYSMENU | WS_MINIMIZEBOX | WS_VISIBLE;
+    DWORD windowStyle = WS_SYSMENU | WS_CAPTION | WS_MINIMIZEBOX | WS_VISIBLE;
     DWORD windowStyleEx = 0;
 
     // adjust window so that drawable area is exactly the size we want
     RECT r = { 0, 0, LONG(windowWidth), LONG(windowHeight) };
     AdjustWindowRectEx(&r, windowStyle, FALSE, windowStyleEx);
-
-    if ((r.right - r.left) == LONG(windowWidth)) { // AdjustWindowRect doesn't seem to work for some window styles
-        int32 x_adjust = GetSystemMetrics(SM_CXFIXEDFRAME) * 2;
-        int32 y_adjust = GetSystemMetrics(SM_CYCAPTION) + GetSystemMetrics(SM_CYFIXEDFRAME) * 2;
-        r.right += x_adjust;
-        r.bottom += y_adjust;
-    }
 
     mainWindow = CreateWindowEx(windowStyleEx, windowClass.lpszClassName, "MiniRayTracer", windowStyle, 5, 35,
                                 (r.right - r.left), (r.bottom - r.top), NULL, NULL, hInstance, 0);

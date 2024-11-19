@@ -21,7 +21,7 @@ bool constant_volume::hit(const ray& r, float tmin, float tmax, hit_record *rec)
                 rec1.t = 0;
 
             float inside_dist = (rec2.t - rec1.t);
-            float hit_dist = -(1 / density) * log(randf());
+            float hit_dist = -(1 / density) * logf(randf());
 
             if (hit_dist < inside_dist) {
                 rec->t = rec1.t + hit_dist;

@@ -19,7 +19,7 @@ public:
         time1 = shutter_t1;
 
         float theta = RAD(vfov);
-        float height = 2.0f * tan(theta / 2);
+        float height = 2.0f * tanf(theta / 2);
         float width = aspect * height;
 
         origin = pos;

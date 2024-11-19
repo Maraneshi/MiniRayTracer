@@ -292,7 +292,7 @@ inline Vec3 log10(const Vec3& v) {
 }
 
 inline Vec3 pow(const Vec3& v, float f) {
-    return Vec3(pow(v.x, f), pow(v.y, f), pow(v.z, f));
+    return Vec3(powf(v.x, f), powf(v.y, f), powf(v.z, f));
 }
 
 inline Vec3& Vec3::gamma_correct() {

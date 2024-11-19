@@ -37,6 +37,9 @@ public:
         }
         return true;
 #elif 1
+        // TODO: we can just use another min/max, better than the t0/t1 swap
+        //       investigate the right argument order for min/max to eliminate NaNs or add a tiny value to invDir
+
         Vec3 invDir = 1.0f / r.dir;
 
         m128 t0 = ((min - r.origin) * invDir).m;

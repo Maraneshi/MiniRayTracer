@@ -168,6 +168,6 @@ bool triangle::hit(const ray& r, float tmin, float tmax, hit_record *rec) const 
     rec->p = r.eval(t * rcpDet);
     rec->n = ((an * (1 - u - v)) + (bn * u) + (cn * v)).normalize();
     rec->mat_ptr = mat_ptr;
-#endif
     return true;
+#endif
 }

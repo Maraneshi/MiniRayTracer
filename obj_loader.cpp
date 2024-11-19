@@ -28,7 +28,7 @@ triangle **readObj(const char* filename, material *mat, size_t *numTris, bool fl
 
         while (!feof(f)) {
 
-            char s = getc(f);
+            char s = (char) getc(f);
 
             if (s == '#') { // comment
                 char buf[64] = { 0 };
@@ -41,7 +41,7 @@ triangle **readObj(const char* filename, material *mat, size_t *numTris, bool fl
             }
             else if (s == 'v') {
 
-                s = getc(f);
+                s = (char) getc(f);
 
                 if (s == ' ' || s == '\t') { // vertex
 

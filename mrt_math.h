@@ -74,8 +74,7 @@ namespace MRT {
     }
 
     inline float sqrt(float f) {
-        __m128 m = _mm_set_ss(f);
-        return _mm_cvtss_f32(_mm_sqrt_ss(m));
+        return _mm_cvtss_f32(_mm_sqrt_ss(_mm_set_ss(f)));
     }
 
     inline float abs(float f) {
