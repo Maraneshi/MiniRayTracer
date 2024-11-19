@@ -11,10 +11,10 @@
 
 #define OBJ_LOADER_DEBUG true
 
-triangle **readObj(const char* filename, material *mat, size_t *numTris, bool flip_triangles, const Mat4& scale, const Vec3& translate, const Mat4& rotate) {
+std::unique_ptr<triangle[]> readObj(const char* filename, material* mat, size_t* numTris, bool flip_triangles, const Mat4& scale, const Vec3& translate, const Mat4& rotate) {
     std::vector<Vec3> verts;
     std::vector<Vec3> norms;
-    std::vector<triangle*> polys;
+    std::vector<triangle> polys; // TODO: this creates an unnecessary copy but is easier for now, we're not really worried about scene build cost anyways
 
     Mat4 invRot = Mat4::Invert(rotate);
 
@@ -90,7 +90,7 @@ triangle **readObj(const char* filename, material *mat, size_t *numTris, bool fl
                         c += translate;
 
 
-                        polys.push_back(new triangle(a, b, c, mat));
+                        polys.emplace_back(a, b, c, mat);
                     }
                     else {
                         if (OBJ_LOADER_DEBUG) MRT_Assert(false);
@@ -130,7 +130,7 @@ triangle **readObj(const char* filename, material *mat, size_t *numTris, bool fl
                         c += translate;
 
 
-                        polys.push_back(new triangle(a, b, c, an, bn, cn, mat));
+                        polys.emplace_back(a, b, c, an, bn, cn, mat);
                     }
                     else {
                         if (OBJ_LOADER_DEBUG) MRT_Assert(false);
@@ -152,11 +152,8 @@ triangle **readObj(const char* filename, material *mat, size_t *numTris, bool fl
         fclose(f);
 
         *numTris = polys.size();
-        triangle **list = new triangle*[polys.size()];
-        for (size_t i = 0; i < polys.size(); i++)
-        {
-            list[i] = polys[i];
-        }
+        std::unique_ptr<triangle[]> list = std::make_unique_for_overwrite<triangle[]>(polys.size());
+        memcpy(list.get(), polys.data(), polys.size() * sizeof(triangle));
         return list;
     }
     else {

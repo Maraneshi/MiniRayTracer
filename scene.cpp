@@ -496,26 +496,26 @@ static scene triangles(float aspect) {
     list[i++] = new xz_rect(0, 555, 0, 555, 0, white);
     list[i++] = new xy_rect(555, 0, 0, 555, 555, silver);
 
-    // list[i++] = new translate(new triangle(2 * Vec3(0, 0, 82.5f), 2 * Vec3(82.5f, 82.5f, 120), 2 * Vec3(185, 0, 0), silver), Vec3(90, 0, 165));
-    // list[i++] = new translate(new triangle(2 * Vec3(0, 0, 0), 2 * Vec3(82.5f, 82.5f, 100), 2 * Vec3(165, 0, 82.5f), silver), Vec3(185, 0, 95));
+    // list[i++] = new translate(new triangle_scene_object(2 * Vec3(0, 0, 82.5f), 2 * Vec3(82.5f, 82.5f, 120), 2 * Vec3(185, 0, 0), silver), Vec3(90, 0, 165));
+    // list[i++] = new translate(new triangle_scene_object(2 * Vec3(0, 0, 0), 2 * Vec3(82.5f, 82.5f, 100), 2 * Vec3(165, 0, 82.5f), silver), Vec3(185, 0, 95));
 
     size_t tris = 0;
-    triangle **bunny = readObj("../obj/bunny.obj", dia, &tris, true, Mat4::Scale(2000.0f), Vec3(195, -20, 280));
+    std::unique_ptr<triangle[]> bunny = readObj("../obj/bunny.obj", dia, &tris, true, Mat4::Scale(2000.0f), Vec3(195, -20, 280));
     if (tris && bunny) {
-        list[i++] = new bvh_node<triangle>(bunny, tris, shutter_t0, shutter_t1);
+        list[i++] = new pod_bvh<triangle>(bunny.get(), tris, shutter_t0, shutter_t1);
     }
 
     tris = 0;
-    triangle **teapot = readObj("../obj/teapot3_no_vt.obj", dia, &tris, false, Mat4::Scale(250.0f), Vec3(393, 50, 108), Mat4::RotateY(RAD(30)));
+    std::unique_ptr<triangle[]> teapot = readObj("../obj/teapot3_no_vt.obj", dia, &tris, false, Mat4::Scale(250.0f), Vec3(393, 50, 108), Mat4::RotateY(RAD(30)));
     if (tris && teapot) {
         ////list[i++] = new rotate_y(new bvh_node(teapot, tris, shutter_t0, shutter_t1), 30);
-        list[i++] = new bvh_node<triangle>(teapot, tris, shutter_t0, shutter_t1);
+        list[i++] = new pod_bvh<triangle>(teapot.get(), tris, shutter_t0, shutter_t1);
     }
 
     /*   tris = 0;
-    triangle **spider = readObj("../obj/spider_pruned.obj", dia, &tris, false, 1.3f, Vec3(385, 70, 100));
+    std::unique_ptr<triangle[]> spider = readObj("../obj/spider_pruned.obj", dia, &tris, false, 1.3f, Vec3(385, 70, 100));
     if (tris && spider) {
-    list[i++] = new bvh_node<triangle>(spider, tris, shutter_t0, shutter_t1);
+    list[i++] = new pod_bvh<triangle>(spider.get(), tris, shutter_t0, shutter_t1);
     }
     */
     scene_object *objects = new object_list<scene_object>(list, i, shutter_t0, shutter_t1);

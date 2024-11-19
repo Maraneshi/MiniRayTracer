@@ -115,6 +115,9 @@
     <ClInclude Include="..\volumes.h" />
     <ClInclude Include="..\work_queue.h" />
   </ItemGroup>
+  <ItemGroup>
+    <Natvis Include="MiniRayTracer.natvis" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

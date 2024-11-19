@@ -1,6 +1,7 @@
 *.filters   text eol=crlf
 *.vcxproj   text eol=crlf
 *.props     text eol=crlf
+*.natvis    text eol=crlf
 *.sln       text eol=crlf
 *.bat       text eol=crlf
 *.sh        text eol=lf

@@ -16,10 +16,10 @@ public:
     // min must be < max in all dimensions
     aabb(const Vec3& min, const Vec3& max) : min(min), max(max) {}
 
-    Vec3 center() {
+    Vec3 center() const {
         return (max + min) * 0.5f;
     }
-    Vec3 extent() {
+    Vec3 extent() const {
         return (max - min) * 0.5f;
     }
     bool hit(const ray& r, float tmin, float tmax) const {

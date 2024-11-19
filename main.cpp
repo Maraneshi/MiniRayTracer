@@ -61,10 +61,11 @@ static Vec3 *G_linearBackBuffer;
 //       RAY TRACER       //
 ////////////////////////////
 
+static MRT_Params *params = getParams();
+
 Vec3 trace(const ray& r, const scene_object& scene, scene_object *biased_obj, uint32 depth) {
 
     G_rayCounter.fetch_add(1, std::memory_order_relaxed);
-    static MRT_Params *params = getParams();
 
     hit_record hrec;
     if (scene.hit(r, 0.001f, std::numeric_limits<float>::max(), &hrec)) {

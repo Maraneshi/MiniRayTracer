@@ -27,7 +27,6 @@ public:
     virtual Vec3 pdf_generate(const Vec3& origin, float time) const {
         return Vec3(1, 0, 0);
     }
-    virtual void precompute_node_order() {}
     virtual ~scene_object() {}
 };
 
@@ -80,6 +79,7 @@ Vec3 object_list<T>::pdf_generate(const Vec3& origin, float time) const {
 template <typename T>
 bool object_list<T>::hit(const ray& r, float tmin, float tmax, hit_record *rec) const {
 
+    // TODO: make this less complicated
     if (!hasBox || box.hit(r, tmin, tmax)) {
         hit_record cur_rec;
         bool hit = false;
@@ -151,7 +151,7 @@ public:
     }
     bool hit(const ray& r, float tmin, float tmax, hit_record *rec) const override;
 
-    void precompute_node_order() override
+    void precompute_node_order()
     {
         // http://www.codercorner.com/blog/?p=734
 
