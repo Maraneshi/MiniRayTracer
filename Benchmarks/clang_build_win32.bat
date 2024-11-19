@@ -28,7 +28,6 @@ SET warns=-Wall -Wextra -Wno-unused-parameter -Wno-missing-field-initializers
 SET opts=-m64 -O3 -march=native -Xlinker /LTCG
 SET misc=-fno-exceptions -fno-rtti -D_CRT_SECURE_NO_WARNINGS -DBENCHMARK_STATIC_DEFINE -D_ENABLE_EXTENDED_ALIGNED_STORAGE -Xclang -flto-visibility-public-std
 
-REM C++14 is required if compiling with the Visual Studio 2017 headers
-clang++ -std=c++14 %opts% %dirs% %libs% %warns% %misc% %fixVCRT% -o bench_clang.exe %files%
+clang++ -std=c++20 %opts% %dirs% %libs% %warns% %misc% %fixVCRT% -o bench_clang.exe %files%
 
 ENDLOCAL

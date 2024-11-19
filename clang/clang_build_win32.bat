@@ -25,9 +25,9 @@ SET opts=-m64 -O3 -march=native
 SET misc=-fno-exceptions -fno-rtti -D_CRT_SECURE_NO_WARNINGS -DBENCHMARK_STATIC_DEFINE -D_ENABLE_EXTENDED_ALIGNED_STORAGE -Xclang -flto-visibility-public-std
 
 REM C++14 is required if compiling with the Visual Studio 2017 headers
-clang++ -std=c++14 %opts% %dirs% %libs% %warns% %misc% -o MiniRayTracer.exe %files%
+clang++ -std=c++20 %opts% %dirs% %libs% %warns% %misc% -o MiniRayTracer.exe %files%
 
 REM optional asm output
-REM clang++ -S -std=c++14 -masm=intel %opts% %dirs% %libs% %misc% %files%
+REM clang++ -S -std=c++20 -masm=intel %opts% %dirs% %libs% %misc% %files%
 
 ENDLOCAL

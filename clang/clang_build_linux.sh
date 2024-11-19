@@ -26,7 +26,7 @@ warns="-Wall -Wextra -Wno-unused-parameter -Wno-missing-field-initializers -Wno-
 opts="-m64 -g -O3 -march=native"
 misc="-fno-exceptions -fno-rtti -DBENCHMARK_STATIC_DEFINE"
 
-clang++ -std=c++14 $opts $dirs $libs $warns $misc -o MiniRayTracer $files
+clang++ -std=c++20 $opts $dirs $libs $warns $misc -o MiniRayTracer $files
 
 # optional asm output
-# clang++ -S -std=c++14 -masm=intel $opts $dirs $libs $misc $files
+# clang++ -S -std=c++20 -masm=intel $opts $dirs $libs $misc $files

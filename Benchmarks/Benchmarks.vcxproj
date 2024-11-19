@@ -96,10 +96,11 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>BENCHMARK_STATIC_DEFINE;_HAS_EXCEPTIONS=0;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;benchmark.lib;shlwapi.lib</AdditionalDependencies>
+      <AdditionalDependencies>ole32.lib;oleaut32.lib;kernel32.lib;user32.lib;gdi32.lib;benchmark.lib;shlwapi.lib</AdditionalDependencies>
       <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories);$(ProjectDir)lib\</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
@@ -123,6 +124,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>BENCHMARK_STATIC_DEFINE;_HAS_EXCEPTIONS=0;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <AdditionalDependencies>ole32.lib;oleaut32.lib;kernel32.lib;user32.lib;gdi32.lib;benchmark.lib;shlwapi.lib</AdditionalDependencies>

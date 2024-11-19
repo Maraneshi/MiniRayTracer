@@ -7,7 +7,7 @@ Initial implementation and scenes based on [Peter Shirley's minibook series on r
 Get command line options with *--help*. Default parameters are currently in *cmdline_parser.h*.
 
 ### Dependencies
-* C++14 compatible Clang or Visual Studio 2022
+* C++20 compatible Clang or Visual Studio 2022
 * Linux only: SDL2
 
 ### Example output images:

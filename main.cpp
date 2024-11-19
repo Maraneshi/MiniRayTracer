@@ -410,7 +410,7 @@ int main(int argc, char* argv[]) {
                 MRT_SetWindowTitle(buf);
             }
 
-            MRT_ReportProgress(pctDone, 100);
+            MRT_ReportProgress((uint64_t)pctDone, 100);
 
 #if 1
             {
